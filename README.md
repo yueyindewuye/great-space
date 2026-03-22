@@ -2,6 +2,12 @@
 
 一个纯静态的中文个人主页项目，直接用 `index.html`、`styles.css` 和 `script.js` 组成。
 
+## 在线访问
+
+个人主页地址：
+
+[https://yueyindewuye.github.io/great-space/](https://yueyindewuye.github.io/great-space/)
+
 ## 本地预览
 
 在项目目录运行：
@@ -25,9 +31,8 @@ python3 -m http.server 8000
 1. 在 GitHub 新建一个仓库
 2. 把这个项目推送到仓库的 `main` 或 `master` 分支
 3. 进入 GitHub 仓库 `Settings > Pages`
-4. 在 `Build and deployment` 里选择 `GitHub Actions`
-5. 推送代码后，等待 Actions 跑完
-6. GitHub Pages 会生成一个公开网址
+4. 在 `Build and deployment` 里配置 Pages
+5. 部署完成后，项目页可通过上面的公开网址直接访问
 
 ## 备注
 
