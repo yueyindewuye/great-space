@@ -7,6 +7,7 @@
   --line: rgba(30, 26, 25, 0.12);
   --accent: #d86d43;
   --accent-soft: #f4cfb3;
+  --accent-deep: #b5522f;
   --night-top: #0e1930;
   --night-bottom: #1c2847;
   --shadow: 0 24px 80px rgba(84, 48, 28, 0.14);
@@ -95,7 +96,8 @@ body::before {
 }
 
 .nav-link,
-.button {
+.button,
+.resource-card {
   color: inherit;
   text-decoration: none;
 }
@@ -124,11 +126,13 @@ body::before {
 .hero-card,
 .profile-card,
 .value-card,
-.collage-card,
 .project-card,
 .playground-copy,
 .game-panel,
-.future-panel {
+.future-panel,
+.tracker-card,
+.tracker-side,
+.resource-card {
   background: var(--paper);
   backdrop-filter: blur(18px);
   border: 1px solid rgba(255, 255, 255, 0.58);
@@ -143,7 +147,8 @@ body::before {
 .hero-card,
 .playground-copy,
 .game-panel,
-.future-panel {
+.tracker-card,
+.tracker-side {
   padding: 1.6rem;
   border-radius: var(--radius-xl);
 }
@@ -156,7 +161,8 @@ body::before {
 .card-label,
 .timeline-year,
 .profile-tag,
-.stat-label {
+.stat-label,
+.project-label {
   margin: 0 0 0.8rem;
   font-size: 0.78rem;
   font-weight: 700;
@@ -180,12 +186,12 @@ h2 {
 }
 
 h1 {
-  font-size: clamp(3rem, 9vw, 6.6rem);
-  max-width: 8ch;
+  font-size: clamp(3rem, 9vw, 6.3rem);
+  max-width: 9ch;
 }
 
 h2 {
-  font-size: clamp(2.1rem, 4.8vw, 3.9rem);
+  font-size: clamp(2rem, 4.6vw, 3.8rem);
 }
 
 h3 {
@@ -205,10 +211,14 @@ p {
   color: var(--muted);
 }
 
-.hero-actions {
+.hero-actions,
+.tracker-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
+}
+
+.hero-actions {
   margin-top: 2rem;
 }
 
@@ -226,11 +236,14 @@ p {
   transition:
     transform 180ms ease,
     background 180ms ease,
-    opacity 180ms ease;
+    opacity 180ms ease,
+    border-color 180ms ease;
 }
 
 .button:hover,
-.button:focus-visible {
+.button:focus-visible,
+.resource-card:hover,
+.resource-card:focus-visible {
   transform: translateY(-2px);
 }
 
@@ -250,7 +263,8 @@ p {
   border: 1px solid var(--line);
 }
 
-.snapshot-list {
+.snapshot-list,
+.card-list {
   margin: 1rem 0 0;
   padding-left: 1.2rem;
   color: var(--muted);
@@ -287,17 +301,34 @@ p {
 
 .profile-grid,
 .project-grid,
-.values-grid {
+.resource-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1rem;
 }
 
+.values-grid.four-up {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.project-grid.expanded {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
 .profile-card,
 .project-card,
-.value-card {
+.value-card,
+.resource-card {
   padding: 1.5rem;
   border-radius: var(--radius-md);
+}
+
+.project-card,
+.resource-card {
+  display: grid;
+  gap: 0.7rem;
 }
 
 .timeline {
@@ -313,50 +344,51 @@ p {
   border-top: 1px solid var(--line);
 }
 
-.collage {
-  display: grid;
-  grid-template-columns: 1.2fr 0.8fr;
-  gap: 1rem;
-}
-
-.collage-card {
-  min-height: 220px;
-  padding: 1.5rem;
-  border-radius: var(--radius-lg);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.68), rgba(255, 255, 255, 0.42)),
-    var(--paper);
-}
-
-.collage-card span {
-  font-size: 1.25rem;
-  font-weight: 700;
-}
-
-.collage-card.large {
-  min-height: 420px;
-}
-
-.collage-card.accent {
-  background:
-    linear-gradient(160deg, rgba(216, 109, 67, 0.9), rgba(155, 66, 33, 0.92));
-  color: #fff6f0;
-}
-
+.french-grid,
 .playground-grid {
   display: grid;
-  grid-template-columns: 0.95fr 1.05fr;
+  grid-template-columns: 1fr 1fr;
   gap: 1rem;
 }
 
+.tracker-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 1.4rem;
+}
+
+.tracker-form label {
+  display: grid;
+  gap: 0.45rem;
+  font-size: 0.94rem;
+}
+
+.tracker-form input,
+.tracker-form textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 0.9rem 1rem;
+  font: inherit;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.tracker-form textarea {
+  resize: vertical;
+}
+
+.full-span {
+  grid-column: 1 / -1;
+}
+
+.tracker-stats,
 .game-stats {
   display: flex;
   flex-wrap: wrap;
   gap: 0.8rem;
-  margin: 1.35rem 0;
+  margin-bottom: 1.2rem;
 }
 
 .stat-chip {
@@ -370,6 +402,66 @@ p {
 .stat-label {
   display: block;
   margin-bottom: 0.25rem;
+}
+
+.tracker-history {
+  border-top: 1px solid var(--line);
+  padding-top: 1rem;
+}
+
+.history-head {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.history-head p,
+.resource-note,
+.empty-history {
+  color: var(--muted);
+}
+
+.history-list {
+  display: grid;
+  gap: 0.85rem;
+  margin-top: 1rem;
+}
+
+.history-item {
+  padding: 1rem;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.58);
+  border: 1px solid var(--line);
+}
+
+.history-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  margin-bottom: 0.4rem;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.history-item h4 {
+  margin: 0 0 0.35rem;
+  font-size: 1rem;
+}
+
+.resource-card {
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.resource-card:hover,
+.resource-card:focus-visible {
+  border-color: rgba(216, 109, 67, 0.35);
+  box-shadow: 0 24px 80px rgba(84, 48, 28, 0.18);
+}
+
+.resource-note {
+  margin-top: 1rem;
 }
 
 .game-area {
@@ -482,10 +574,6 @@ p {
   z-index: 2;
 }
 
-.future-panel {
-  padding: clamp(2rem, 4vw, 3rem);
-}
-
 .footer {
   padding-top: 4rem;
   color: var(--muted);
@@ -526,9 +614,10 @@ p {
   .intro-grid,
   .timeline-item,
   .profile-grid,
-  .values-grid,
   .project-grid,
-  .collage,
+  .resource-grid,
+  .values-grid.four-up,
+  .french-grid,
   .playground-grid {
     grid-template-columns: 1fr;
   }
@@ -537,8 +626,8 @@ p {
     margin-bottom: 0;
   }
 
-  .collage-card.large {
-    min-height: 260px;
+  .tracker-form {
+    grid-template-columns: 1fr;
   }
 
   .game-area {
@@ -569,7 +658,8 @@ p {
   .hero-card,
   .playground-copy,
   .game-panel,
-  .future-panel {
+  .tracker-card,
+  .tracker-side {
     padding: 1.35rem;
     border-radius: 24px;
   }
@@ -598,6 +688,7 @@ p {
   .reveal-delay-2,
   .reveal-delay-3,
   .button,
+  .resource-card,
   .star-node {
     transition: none;
   }

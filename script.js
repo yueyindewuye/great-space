@@ -16,6 +16,135 @@ const observer = new IntersectionObserver(
 
 revealElements.forEach((element) => observer.observe(element));
 
+const frenchForm = document.querySelector("#french-form");
+const clearLogButton = document.querySelector("#clear-log");
+const historyList = document.querySelector("#history-list");
+const trackerMessage = document.querySelector("#tracker-message");
+const studyDaysDisplay = document.querySelector("#study-days");
+const totalMinutesDisplay = document.querySelector("#study-total-minutes");
+const streakDisplay = document.querySelector("#study-streak");
+const studyDateInput = document.querySelector("#study-date");
+
+const frenchStorageKey = "life-site-french-log";
+
+function getTodayString() {
+  const today = new Date();
+  const month = String(today.getMonth() + 1).padStart(2, "0");
+  const day = String(today.getDate()).padStart(2, "0");
+  return `${today.getFullYear()}-${month}-${day}`;
+}
+
+function loadFrenchLogs() {
+  try {
+    return JSON.parse(window.localStorage.getItem(frenchStorageKey) || "[]");
+  } catch {
+    return [];
+  }
+}
+
+function saveFrenchLogs(logs) {
+  window.localStorage.setItem(frenchStorageKey, JSON.stringify(logs));
+}
+
+function computeStreak(logs) {
+  if (logs.length === 0) {
+    return 0;
+  }
+
+  const timestamps = logs
+    .map((log) => new Date(`${log.date}T00:00:00`).getTime())
+    .sort((a, b) => b - a);
+
+  let streak = 1;
+
+  for (let index = 0; index < timestamps.length - 1; index += 1) {
+    const current = timestamps[index];
+    const next = timestamps[index + 1];
+    const difference = current - next;
+
+    if (difference === 24 * 60 * 60 * 1000) {
+      streak += 1;
+    } else if (difference === 0) {
+      continue;
+    } else {
+      break;
+    }
+  }
+
+  return streak;
+}
+
+function renderFrenchLogs() {
+  const logs = loadFrenchLogs().sort((a, b) => b.date.localeCompare(a.date));
+  const totalMinutes = logs.reduce((sum, log) => sum + Number(log.minutes || 0), 0);
+
+  studyDaysDisplay.textContent = logs.length;
+  totalMinutesDisplay.textContent = totalMinutes;
+  streakDisplay.textContent = computeStreak(logs);
+
+  historyList.innerHTML = "";
+
+  if (logs.length === 0) {
+    trackerMessage.textContent = "先保存一条记录，这里会自动生成你的学习历史。";
+    const emptyState = document.createElement("p");
+    emptyState.className = "empty-history";
+    emptyState.textContent = "还没有学习记录，今天就来写第一条。";
+    historyList.appendChild(emptyState);
+    return;
+  }
+
+  trackerMessage.textContent = "这些记录会保存在当前浏览器里，方便你每天回来继续更新。";
+
+  logs.slice(0, 7).forEach((log) => {
+    const item = document.createElement("article");
+    item.className = "history-item";
+
+    const meta = document.createElement("div");
+    meta.className = "history-meta";
+    meta.innerHTML = `<span>${log.date}</span><span>${log.minutes} 分钟</span><span>${log.words || 0} 个新词</span>`;
+
+    const title = document.createElement("h4");
+    title.textContent = log.topic;
+
+    const note = document.createElement("p");
+    note.textContent = log.note || "今天完成了一次稳定学习。";
+
+    item.append(meta, title, note);
+    historyList.appendChild(item);
+  });
+}
+
+studyDateInput.value = getTodayString();
+
+frenchForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+
+  const formData = new FormData(frenchForm);
+  const newLog = {
+    date: String(formData.get("study-date")),
+    minutes: Number(formData.get("study-minutes")),
+    topic: String(formData.get("study-topic")).trim(),
+    words: Number(formData.get("study-words") || 0),
+    note: String(formData.get("study-note")).trim(),
+  };
+
+  const logs = loadFrenchLogs().filter((log) => log.date !== newLog.date);
+  logs.push(newLog);
+  saveFrenchLogs(logs);
+  renderFrenchLogs();
+  frenchForm.reset();
+  studyDateInput.value = getTodayString();
+});
+
+clearLogButton.addEventListener("click", () => {
+  window.localStorage.removeItem(frenchStorageKey);
+  renderFrenchLogs();
+  frenchForm.reset();
+  studyDateInput.value = getTodayString();
+});
+
+renderFrenchLogs();
+
 const starNodes = Array.from(document.querySelectorAll(".star-node"));
 const startButton = document.querySelector("#start-game");
 const roundDisplay = document.querySelector("#round");
